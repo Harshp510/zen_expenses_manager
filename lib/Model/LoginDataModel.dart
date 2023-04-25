@@ -15,6 +15,8 @@ class LoginDataModel {
   String? defaultModule;
   String? roleName;
   String? flag;
+  String? MStatus;
+  String? MError;
 
   LoginDataModel(
       {this.userID,
@@ -30,7 +32,9 @@ class LoginDataModel {
         this.roleId,
         this.defaultModule,
         this.roleName,
-        this.flag});
+        this.flag,
+        this.MStatus,
+        this.MError});
 
   LoginDataModel.fromJson(Map<String, dynamic> json) {
     userID = json['UserID'];
@@ -47,6 +51,8 @@ class LoginDataModel {
     defaultModule = json['DefaultModule'];
     roleName = json['Role_Name'];
     flag = json['Flag'];
+    MStatus = json['MStatus'];
+    MError = json['MError'];
   }
 
   Map<String, dynamic> toJson() {
@@ -65,6 +71,8 @@ class LoginDataModel {
     data['DefaultModule'] = this.defaultModule;
     data['Role_Name'] = this.roleName;
     data['Flag'] = this.flag;
+    data['MStatus'] = this.MStatus;
+    data['MError'] = this.MError;
     return data;
   }
 

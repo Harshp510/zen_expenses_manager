@@ -124,23 +124,24 @@ class _LoginPageState extends State<LoginPage> {
       if (login_data_list.length > 0)
       {
 
-        /*if(login_data_list[0].status=="1")
-        {*/
+        if(login_data_list[0].MStatus=="1")
+        {
           PreferenceUtils.setString("EmployeeId", login_data_list[0].userID.toString());
           PreferenceUtils.setString("Emp_Firstname", login_data_list[0].emailID.toString());
+          PreferenceUtils.setString("Role", login_data_list[0].role.toString());
           PreferenceUtils.setString("username", username);
           PreferenceUtils.setString("password", password);
 
           DialogBuilder(context1).hideOpenDialog();
           _navigateToNextScreen(context1);
-        /*}
+        }
         else
         {
           DialogBuilder(context1).hideOpenDialog();
           Future.delayed(Duration(seconds: 1),(){
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(login_data_list[0].message.toString()),));
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(login_data_list[0].MError.toString()),));
           });
-        }*/
+        }
 
 
 
