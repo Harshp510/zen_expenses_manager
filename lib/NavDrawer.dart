@@ -6,6 +6,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
+import 'package:zen_expenses_manager/Splashpage.dart';
 import 'package:zen_expenses_manager/prefrence/PreferenceUtils.dart';
 import 'package:zen_expenses_manager/provider/DrawerItemRow.dart';
 import 'ApiConstants.dart';
@@ -282,7 +283,7 @@ class _NavDrawerState extends State<NavDrawer> {
                   {
                     final abc = NavigationService.navigatorKey.currentContext;
                     DialogBuilder(abc!).hideOpenDialog();
-                   // _navigateToLogout(abc);
+                    _navigateToLogout(abc);
                   });
 
 
@@ -291,6 +292,16 @@ class _NavDrawerState extends State<NavDrawer> {
         ),
 
     );
+  }
+
+  void _navigateToLogout(BuildContext nextcontext)
+  {
+    Future.delayed(Duration(seconds: 2),()
+    {
+      Navigator.pushReplacement(nextcontext,MaterialPageRoute(builder: (nextcontext) => Splashpage()));
+
+    });
+
   }
 }
 

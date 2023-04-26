@@ -112,6 +112,7 @@ class _LoginPageState extends State<LoginPage> {
     bool connection_flag= await ApiService().check_connection_network();
     print("connection_flag-->"+connection_flag.toString());
 
+
     if(connection_flag)
     {
       DialogBuilder(context1).showLoadingIndicator('');
@@ -128,6 +129,7 @@ class _LoginPageState extends State<LoginPage> {
         {
           PreferenceUtils.setString("EmployeeId", login_data_list[0].userID.toString());
           PreferenceUtils.setString("Emp_Firstname", login_data_list[0].emailID.toString());
+          PreferenceUtils.setString("UserID", login_data_list[0].userID.toString());
           PreferenceUtils.setString("Role", login_data_list[0].role.toString());
           PreferenceUtils.setString("username", username);
           PreferenceUtils.setString("password", password);

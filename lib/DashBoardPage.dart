@@ -73,14 +73,7 @@ class _DashBoardPageState extends State<DashBoardPage> {
                      // Navigator.push(context, SlideRightRoute(page: MyProfile()));
                     },
                     child: CircleAvatar(
-                      child:  Container(
-
-                        decoration: BoxDecoration(shape: BoxShape.circle,image: DecorationImage(
-                            fit: BoxFit.fill,
-                            image:MemoryImage(Base64Decoder().convert((PreferenceUtils.getString('image'))))
-                        )),
-
-                      ),
+                      backgroundImage:AssetImage('assets/images/user_profile.png'),
                       //backgroundImage: AssetImage('assets/images/splash_png.png'),
 
                     ),
@@ -98,11 +91,15 @@ class _DashBoardPageState extends State<DashBoardPage> {
     );
   }
 
-  Widget TAFListView(BuildContext context, List<TafSummaryModel> list){
+  Widget TAFListView(BuildContext context, List<TafSummaryModel> list,int index){
     return Container(
 
       margin: EdgeInsets.all(5.0),
       child: Card(
+        elevation: 2,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15.0),
+          ),
         child: Column(
           children: [
 
@@ -115,9 +112,9 @@ class _DashBoardPageState extends State<DashBoardPage> {
                  // align the text to the left instead of centered
                  crossAxisAlignment: CrossAxisAlignment.start,
                    children: <Widget>[
-                     Text('TAF ID', style: TextStyle(fontSize: 14),),
+                     Text('TAF ID', style: TextStyle(fontSize: 14,fontWeight: FontWeight.w700,color: Color(ApiConstants.primary_light_text_color)),),
                      SizedBox(height: 5,),
-                     Text('0423001',style: TextStyle(fontSize: 16,fontWeight: FontWeight.w500),),
+                     Text(list[index].srNo.toString(),style: TextStyle(fontSize: 16,fontWeight: FontWeight.w500,color: Color(ApiConstants.primary_dark_text_color)),),
                    ],
                  ),
                           ),
@@ -126,9 +123,9 @@ class _DashBoardPageState extends State<DashBoardPage> {
                   // align the text to the left instead of centered
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: <Widget>[
-                    Text('TAF Date', style: TextStyle(fontSize: 14),),
+                    Text('TAF Date', style: TextStyle(fontSize: 14,fontWeight: FontWeight.w700,color: Color(ApiConstants.primary_light_text_color)),),
                     SizedBox(height: 5,),
-                    Text('19-04-2023',style: TextStyle(fontSize: 16,fontWeight: FontWeight.w500),),
+                    Text(list[index].tAFDate1.toString(),style: TextStyle(fontSize: 16,fontWeight: FontWeight.w500,color: Color(ApiConstants.primary_dark_text_color)),),
                   ],
                            ),
                          )
@@ -143,7 +140,11 @@ class _DashBoardPageState extends State<DashBoardPage> {
                     padding: EdgeInsets.all(5.0),
                     width: MediaQuery.of(context).size.width,
                     decoration: BoxDecoration(
-                      color: CupertinoColors.systemGreen
+                        color: Color(ApiConstants.primary_light_text_color),
+                        borderRadius: BorderRadius.only(
+                          bottomRight: Radius.circular(15),
+                          bottomLeft: Radius.circular(15)
+                        )
                     ),
                     child:  Padding(
                       padding: const EdgeInsets.all(8.0),
@@ -151,9 +152,9 @@ class _DashBoardPageState extends State<DashBoardPage> {
                             // align the text to the left instead of centered
                             mainAxisAlignment:MainAxisAlignment.spaceBetween,
                             children: <Widget>[
-                              Text('ADARSH KUMAR SINGH', style: TextStyle(fontSize: 14),),
+                              Text(list[index].indentorName.toString(), style: TextStyle(fontSize: 14,fontWeight: FontWeight.w500,color: Color(ApiConstants.primary_dark_text_color)),),
                               SizedBox(height: 5,),
-                              Text('\u{20B9} 15000.00',style: TextStyle(fontSize: 16,fontWeight: FontWeight.w500),),
+                              Text('\u{20B9}'+list[index].totalAmt.toString(),style: TextStyle(fontSize: 16,fontWeight: FontWeight.w500,color: Color(ApiConstants.primary_dark_text_color)),),
                             ],
                           ),
                     ),
@@ -171,7 +172,7 @@ class _DashBoardPageState extends State<DashBoardPage> {
 
   Widget tabListWidget(){
     return FutureBuilder<List<TafSummaryModel>>(
-        future: ApiService().GetTafWithSummaryByUserid("007AB896-CAE0-49AC-8D39-066A8F01E0B9","RAM","Open,Approved,Remmited",GetSelectedDateFormat(firstDate),GetSelectedDateFormat(lastDate)),
+        future: ApiService().GetTafWithSummaryByUserid(PreferenceUtils.getString("UserID").toString(),base64.encode(utf8.encode(PreferenceUtils.getString("Role"))),"Open,Approved,Remmited",GetSelectedDateFormat(firstDate),GetSelectedDateFormat(lastDate)),
         builder: (context,snapshot){
           if (snapshot.connectionState == ConnectionState.waiting) {
             return ProgressIndicator(context,"Please Wait..");
@@ -189,7 +190,7 @@ class _DashBoardPageState extends State<DashBoardPage> {
                  return ListView.builder(
                     itemCount: list.length,
                    itemBuilder: (context,index){
-                      return TAFListView(context,list);
+                      return TAFListView(context,list,index);
                    },
                  );
                 }else{
