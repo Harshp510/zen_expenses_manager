@@ -47,6 +47,7 @@ class _DashBoardPageState extends State<DashBoardPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey.shade100,
       key: _scaffoldKey,
       appBar:AppBar(
         systemOverlayStyle: SystemUiOverlayStyle(
@@ -112,7 +113,7 @@ class _DashBoardPageState extends State<DashBoardPage> {
                  // align the text to the left instead of centered
                  crossAxisAlignment: CrossAxisAlignment.start,
                    children: <Widget>[
-                     Text('TAF ID', style: TextStyle(fontSize: 14,fontWeight: FontWeight.w700,color: Color(ApiConstants.primary_light_text_color)),),
+                     Text('TAF ID', style: TextStyle(fontSize: 14,fontWeight: FontWeight.w400,color: Colors.indigo.shade300),),
                      SizedBox(height: 5,),
                      Text(list[index].srNo.toString(),style: TextStyle(fontSize: 16,fontWeight: FontWeight.w500,color: Color(ApiConstants.primary_dark_text_color)),),
                    ],
@@ -123,7 +124,7 @@ class _DashBoardPageState extends State<DashBoardPage> {
                   // align the text to the left instead of centered
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: <Widget>[
-                    Text('TAF Date', style: TextStyle(fontSize: 14,fontWeight: FontWeight.w700,color: Color(ApiConstants.primary_light_text_color)),),
+                    Text('TAF Date', style: TextStyle(fontSize: 14,fontWeight: FontWeight.w400,color: Colors.indigo.shade300),),
                     SizedBox(height: 5,),
                     Text(list[index].tAFDate1.toString(),style: TextStyle(fontSize: 16,fontWeight: FontWeight.w500,color: Color(ApiConstants.primary_dark_text_color)),),
                   ],
