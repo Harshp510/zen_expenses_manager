@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:zen_expenses_manager/Splashpage.dart';
 import 'package:provider/provider.dart';
+import 'package:zen_expenses_manager/TAF_Expenses.dart';
 import 'package:zen_expenses_manager/prefrence/PreferenceUtils.dart';
 import 'package:zen_expenses_manager/provider/DrawerItemRow.dart';
 
@@ -47,7 +48,7 @@ class MyApp extends StatelessWidget {
         ),
             initialRoute: '/',
             routes: {
-              '/': (context) => const Splashpage(),
+              '/': (context) => const TAF_Expenses(),
             }
       ),
     );
