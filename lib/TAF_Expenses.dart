@@ -1,11 +1,18 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:zen_expenses_manager/prefrence/PreferenceUtils.dart';
+import 'dart:io' as Platform;
 
 import 'ApiConstants.dart';
+import 'ApiService.dart';
+import 'Model/TAFExpenseSummaryByTAFid.dart';
 
 class TAF_Expenses extends StatefulWidget {
-  const TAF_Expenses({Key? key}) : super(key: key);
+  String taf_id;
+  String taf_srno;
+  String taf_date,name,amount;
+  TAF_Expenses({Key? key,required this.taf_id,required this.taf_srno,required this.taf_date,required this.name,required this.amount}) : super(key: key);
 
   @override
   State<TAF_Expenses> createState() => _TAF_ExpensesState();
@@ -14,7 +21,7 @@ class TAF_Expenses extends StatefulWidget {
 class _TAF_ExpensesState extends State<TAF_Expenses> {
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
+  List<TAFExpenseSummaryByTAFid> list = [];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,7 +37,7 @@ class _TAF_ExpensesState extends State<TAF_Expenses> {
         title: Text('TAF Expenses',style: TextStyle(color: Colors.black87,fontSize: 16,fontWeight: FontWeight.w400),),
         centerTitle: true,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios_new,color: Colors.black54,), onPressed: () { _scaffoldKey.currentState?.openDrawer();  },
+          icon: Icon(Icons.arrow_back_ios_new,color: Colors.black54,), onPressed: () { Navigator.pop(context);  },
         ),
         actions: [
 
@@ -58,13 +65,47 @@ class _TAF_ExpensesState extends State<TAF_Expenses> {
 
         backgroundColor: Colors.white,
       ),
-      body: HeaderView(context),
+      body: MainView(context),
     );
   }
 
+  double getheight(){
+    if(Platform.Platform.isAndroid)
+      return 119;
+    else
+      return 120;
+  }
+  Widget MainView(BuildContext context){
+    // return ListView(
+    //   children: [
+    //     HeaderView(context),
+    //     SizedBox(height: 10,),
+    //
+    //     tabListWidget()
+    //   ],
+    // );
+
+    return Stack(
+      children: [
+        Positioned(child: ListView(
+            children: [
+              HeaderView(context),
+              SizedBox(height: 10,),
+
+              tabListWidget()
+            ],
+        )),
+        Positioned(
+
+          child:  Align(
+              alignment: Alignment.bottomCenter,
+              child: Bottom_Buttons(context)),),
+      ],
+    );
+  }
   Widget HeaderView(BuildContext context){
     return Container(
-      height: 119,
+      height:  getheight(),
       margin: EdgeInsets.all(5.0),
       child: Card(
         elevation: 2,
@@ -85,7 +126,7 @@ class _TAF_ExpensesState extends State<TAF_Expenses> {
                       children: <Widget>[
                         Text('TAF ID', style: TextStyle(fontSize: 14,fontWeight: FontWeight.w400,color: Colors.indigo.shade300),),
                         SizedBox(height: 5,),
-                        Text('0423001',style: TextStyle(fontSize: 16,fontWeight: FontWeight.w500,color: Color(ApiConstants.primary_dark_text_color)),),
+                        Text(widget.taf_srno,style: TextStyle(fontSize: 16,fontWeight: FontWeight.w500,color: Color(ApiConstants.primary_dark_text_color)),),
                       ],
                     ),
                   ),
@@ -96,7 +137,7 @@ class _TAF_ExpensesState extends State<TAF_Expenses> {
                       children: <Widget>[
                         Text('TAF Date', style: TextStyle(fontSize: 14,fontWeight: FontWeight.w400,color: Colors.indigo.shade300),),
                         SizedBox(height: 5,),
-                        Text('19-04-2023',style: TextStyle(fontSize: 16,fontWeight: FontWeight.w500,color: Color(ApiConstants.primary_dark_text_color)),),
+                        Text(widget.taf_date,style: TextStyle(fontSize: 16,fontWeight: FontWeight.w500,color: Color(ApiConstants.primary_dark_text_color)),),
                       ],
                     ),
                   )
@@ -123,9 +164,9 @@ class _TAF_ExpensesState extends State<TAF_Expenses> {
                         // align the text to the left instead of centered
                         mainAxisAlignment:MainAxisAlignment.spaceBetween,
                         children: <Widget>[
-                          Text('ADARSH KUMAR SINGH', style: TextStyle(fontSize: 14,fontWeight: FontWeight.w500,color: Color(ApiConstants.primary_dark_text_color)),),
+                          Text(widget.name, style: TextStyle(fontSize: 14,fontWeight: FontWeight.w500,color: Color(ApiConstants.primary_dark_text_color)),),
                           SizedBox(height: 5,),
-                          Text('\u{20B9} 15000.00',style: TextStyle(fontSize: 16,fontWeight: FontWeight.w500,color: Color(ApiConstants.primary_dark_text_color)),),
+                          Text('\u{20B9} '+widget.amount,style: TextStyle(fontSize: 16,fontWeight: FontWeight.w500,color: Color(ApiConstants.primary_dark_text_color)),),
                         ],
                       ),
                     ),
@@ -134,10 +175,207 @@ class _TAF_ExpensesState extends State<TAF_Expenses> {
                   ),
                 )
               ],
-            )
+            ),
+
           ],
         ),
       ),
     );
   }
+
+  Widget TotalSpendingView(BuildContext context,double total)
+  {
+    return Container(
+      height: 180.0,
+      width: MediaQuery.of(context).size.width,
+      margin: EdgeInsets.only(left: 25,right: 25),
+
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.all(Radius.circular(15)),
+      ),
+      child: Column(
+
+
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+
+
+
+
+        children: [
+          Text("TOTAL SPENDING",style: TextStyle(fontSize: 17,color: Colors.indigo.shade300,fontWeight: FontWeight.w500),),
+          const SizedBox(height: 10,),
+          Text("\u{20B9} ${total.toStringAsFixed(2)}",style: TextStyle(fontSize: 40,fontWeight: FontWeight.w700),),
+          const SizedBox(height: 10,),
+          Container(
+
+            height: 60.00,
+            margin: EdgeInsets.only(left: 30,right: 30),
+            decoration: BoxDecoration(
+              color: Color(
+                ApiConstants.BG_Add_Expense_Blue
+              ),
+              borderRadius: BorderRadius.all(Radius.circular(15)),
+            ),
+
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+
+              children: [
+                Icon(Icons.add_circle_outline,color: Colors.white,),
+                SizedBox(width: 10,),
+                Text("ADD EXPENSE",style: TextStyle(color: Colors.white,fontSize: 17.0),)
+              ],
+            ),
+          )
+
+
+
+
+        ],
+      ),
+    );
+  }
+
+  Widget CustomeRowListview(BuildContext context,List<TAFExpenseSummaryByTAFid> list,int index){
+
+    int indexofimage = ApiConstants.ExpenseHeadlist.indexWhere((item) => item.Name == list[index].expenseHeadName.toString());
+
+
+    //Text('\u{20B9}${list[index].amount!.toStringAsFixed(2)} | ${list[index].expenseDate1}'),
+
+    return Container(
+      width: double.infinity,
+      child: ListTile(
+        title:Row(
+          children: [
+
+            Text('\u{20B9}${list[index].amount!.toStringAsFixed(2)}',style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500),),
+            SizedBox(width: 10,),
+            Text('${list[index].expenseDate1}',style: TextStyle(fontSize: 14),),
+
+          ],
+        ),
+        subtitle: Text(list[index].expenseHeadName.toString()),
+        trailing: Image.asset(ApiConstants.ExpenseHeadlist[indexofimage].image_name.toString(),height: 45,width: 45,),
+      ),
+    );
+  }
+  Widget tabListWidget(){
+    return FutureBuilder<List<TAFExpenseSummaryByTAFid>>(
+        future: ApiService().GetTafExpenseSummaryByTAFid(widget.taf_id),
+        builder: (context,snapshot){
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return ProgressIndicator(context,"Please Wait..");
+          }
+          else if(snapshot.connectionState==ConnectionState.done)
+          {
+            if(snapshot.hasError)
+            {
+              return  Center(child: Text('Something Went Wrong'));
+            }
+            else if(snapshot.hasData)
+            {
+              if(snapshot.data!.length>0){
+                list = snapshot.data!;
+                final total = list.fold<double>(0, (sum, item) => sum + item.amount!);
+                return Column(
+                  children: [
+                    TotalSpendingView(context,total),
+                    SizedBox(height: 10,),
+                    Container(
+                      margin: EdgeInsets.only(left: 25,right: 25),
+
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.all(Radius.circular(15)),
+                      ),
+                      child: ListView.separated(
+                        primary: false,
+                        scrollDirection: Axis.vertical,
+                        physics: NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: list.length,
+                        itemBuilder: (context,index){
+                          return CustomeRowListview(context,list,index);
+                        },
+                        separatorBuilder: (context, index) {
+                          return Divider();
+                        },
+                      ),
+                    ),
+                    SizedBox(height: 75,),
+                  ],
+                );
+              }else{
+                return  Center(child: Text('Empty data'));
+              }
+            }
+            else
+            {
+              return  Center(child: Text('Empty data'));
+            }
+
+          }
+          else
+          {
+            return  ProgressIndicator(context,"Please Wait..");
+
+          }
+        });
+  }
+
+
+
+  Widget Bottom_Buttons(BuildContext context)
+  {
+    return Row(
+
+
+
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+
+        SizedBox(
+          height: 60,
+          width: MediaQuery.of(context).size.width,
+
+          child: ElevatedButton(
+
+            onPressed: () {},
+            child: Text('SUBMIT'),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Color(
+                  ApiConstants.BG_Add_Expense_Blue
+              ),
+              // shape: RoundedRectangleBorder(
+              //   borderRadius: BorderRadius.circular(12),
+              //   // <-- Radius
+              // ),
+            ),
+          ),
+        )
+      ],
+    );
+  }
+
+
+
+
+
+  Widget ProgressIndicator(BuildContext context,String title){
+    return  Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          CircularProgressIndicator(),
+          SizedBox(height: 15,),
+          Text(title,style: TextStyle(fontSize: 16,fontFamily: ApiConstants.fontname,color: Colors.black87),)
+        ],
+      ),
+    );
+  }
 }
+

@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:zen_expenses_manager/Model/TafSummaryModel.dart';
+import 'package:zen_expenses_manager/TAF_Expenses.dart';
 import 'package:zen_expenses_manager/prefrence/PreferenceUtils.dart';
 import 'package:intl/intl.dart';
 import 'ApiConstants.dart';
@@ -93,79 +94,94 @@ class _DashBoardPageState extends State<DashBoardPage> {
   }
 
   Widget TAFListView(BuildContext context, List<TafSummaryModel> list,int index){
-    return Container(
+    return GestureDetector(
+      onTap: (){
+        print("JOY");
+        print(list[index].srNo.toString());
 
-      margin: EdgeInsets.all(5.0),
-      child: Card(
-        elevation: 2,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15.0),
-          ),
-        child: Column(
-          children: [
+        Navigator.push(context,MaterialPageRoute(builder: (nextcontext) => TAF_Expenses(
+          taf_id: list[index].tAFId.toString(),
+          taf_srno: list[index].srNo.toString(),
+          taf_date: list[index].tAFDate1.toString(),
+          name: list[index].indentorName.toString(),
+          amount: list[index].totalAmt.toString(),
+        )));
 
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                children: <Widget>[
-                 Expanded(
-                 child: Column(
-                 // align the text to the left instead of centered
-                 crossAxisAlignment: CrossAxisAlignment.start,
-                   children: <Widget>[
-                     Text('TAF ID', style: TextStyle(fontSize: 14,fontWeight: FontWeight.w400,color: Colors.indigo.shade300),),
-                     SizedBox(height: 5,),
-                     Text(list[index].srNo.toString(),style: TextStyle(fontSize: 16,fontWeight: FontWeight.w500,color: Color(ApiConstants.primary_dark_text_color)),),
-                   ],
-                 ),
-                          ),
-                 Expanded(
-                           child: Column(
-                  // align the text to the left instead of centered
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: <Widget>[
-                    Text('TAF Date', style: TextStyle(fontSize: 14,fontWeight: FontWeight.w400,color: Colors.indigo.shade300),),
-                    SizedBox(height: 5,),
-                    Text(list[index].tAFDate1.toString(),style: TextStyle(fontSize: 16,fontWeight: FontWeight.w500,color: Color(ApiConstants.primary_dark_text_color)),),
-                  ],
-                           ),
-                         )
-                ],
-              ),
+      },
+      child: Container(
+
+        margin: EdgeInsets.all(5.0),
+        child: Card(
+          elevation: 2,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15.0),
             ),
-            SizedBox(height: 10,),
-            Row(
-              children: [
-                Expanded(
-                  child: Container(
-                    padding: EdgeInsets.all(5.0),
-                    width: MediaQuery.of(context).size.width,
-                    decoration: BoxDecoration(
-                        color: Color(ApiConstants.primary_light_text_color),
-                        borderRadius: BorderRadius.only(
-                          bottomRight: Radius.circular(15),
-                          bottomLeft: Radius.circular(15)
-                        )
-                    ),
-                    child:  Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                            // align the text to the left instead of centered
-                            mainAxisAlignment:MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              Text(list[index].indentorName.toString(), style: TextStyle(fontSize: 14,fontWeight: FontWeight.w500,color: Color(ApiConstants.primary_dark_text_color)),),
-                              SizedBox(height: 5,),
-                              Text('\u{20B9}'+list[index].totalAmt.toString(),style: TextStyle(fontSize: 16,fontWeight: FontWeight.w500,color: Color(ApiConstants.primary_dark_text_color)),),
-                            ],
-                          ),
-                    ),
+          child: Column(
+            children: [
+
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  children: <Widget>[
+                   Expanded(
+                   child: Column(
+                   // align the text to the left instead of centered
+                   crossAxisAlignment: CrossAxisAlignment.start,
+                     children: <Widget>[
+                       Text('TAF ID', style: TextStyle(fontSize: 14,fontWeight: FontWeight.w400,color: Colors.indigo.shade300),),
+                       SizedBox(height: 5,),
+                       Text(list[index].srNo.toString(),style: TextStyle(fontSize: 16,fontWeight: FontWeight.w500,color: Color(ApiConstants.primary_dark_text_color)),),
+                     ],
+                   ),
+                            ),
+                   Expanded(
+                             child: Column(
+                    // align the text to the left instead of centered
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: <Widget>[
+                      Text('TAF Date', style: TextStyle(fontSize: 14,fontWeight: FontWeight.w400,color: Colors.indigo.shade300),),
+                      SizedBox(height: 5,),
+                      Text(list[index].tAFDate1.toString(),style: TextStyle(fontSize: 16,fontWeight: FontWeight.w500,color: Color(ApiConstants.primary_dark_text_color)),),
+                    ],
+                             ),
+                           )
+                  ],
+                ),
+              ),
+              SizedBox(height: 10,),
+              Row(
+                children: [
+                  Expanded(
+                    child: Container(
+                      padding: EdgeInsets.all(5.0),
+                      width: MediaQuery.of(context).size.width,
+                      decoration: BoxDecoration(
+                          color: Color(ApiConstants.primary_light_text_color),
+                          borderRadius: BorderRadius.only(
+                            bottomRight: Radius.circular(15),
+                            bottomLeft: Radius.circular(15)
+                          )
+                      ),
+                      child:  Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                              // align the text to the left instead of centered
+                              mainAxisAlignment:MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                Text(list[index].indentorName.toString(), style: TextStyle(fontSize: 14,fontWeight: FontWeight.w500,color: Color(ApiConstants.primary_dark_text_color)),),
+                                SizedBox(height: 5,),
+                                Text('\u{20B9}'+list[index].totalAmt.toString(),style: TextStyle(fontSize: 16,fontWeight: FontWeight.w500,color: Color(ApiConstants.primary_dark_text_color)),),
+                              ],
+                            ),
+                      ),
 
 
-                  ),
-                )
-              ],
-            )
-          ],
+                    ),
+                  )
+                ],
+              )
+            ],
+          ),
         ),
       ),
     );

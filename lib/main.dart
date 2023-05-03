@@ -48,7 +48,7 @@ class MyApp extends StatelessWidget {
         ),
             initialRoute: '/',
             routes: {
-              '/': (context) => const TAF_Expenses(),
+              '/': (context) => const Splashpage(),
             }
       ),
     );
