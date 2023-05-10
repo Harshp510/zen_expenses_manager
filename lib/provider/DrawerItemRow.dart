@@ -29,6 +29,14 @@ class DrawerItemRow extends ChangeNotifier{
   bool get isPleaseWaitShow => _isPleaseWaitShow;
   Map get source => _source;
 
+  double _total = 0.0;
+  double get total => _total;
+
+
+  updatetotal(result) {
+    _total = result;
+    notifyListeners();
+  }
 
   updateLastPunched(result) {
     _lastPunch = result;

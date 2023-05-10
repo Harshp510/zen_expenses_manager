@@ -32,6 +32,19 @@ class _DashBoardPageState extends State<DashBoardPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    DateTime parseDate =
+    new DateFormat("dd-MM-yyyy").parse("09-04-2023");
+    var inputDate = DateTime.parse(parseDate.toString());
+    var outputFormat = DateFormat('MMM');
+    var outputFormat1 = DateFormat('EEEE');
+    var outputFormat2= DateFormat('dd');
+    var outputDate = outputFormat.format(inputDate);
+    var outputDate1 = outputFormat1.format(inputDate);
+    var outputDate2 = outputFormat2.format(inputDate);
+    print(outputDate);
+    print(outputDate1);
+    print(outputDate2);
+
 
     var now = DateTime.now();
     var minus = 0;
@@ -189,7 +202,7 @@ class _DashBoardPageState extends State<DashBoardPage> {
 
   Widget tabListWidget(){
     return FutureBuilder<List<TafSummaryModel>>(
-        future: ApiService().GetTafWithSummaryByUserid(PreferenceUtils.getString("UserID").toString(),base64.encode(utf8.encode(PreferenceUtils.getString("Role"))),"Open,Approved,Remmited",GetSelectedDateFormat(firstDate),GetSelectedDateFormat(lastDate)),
+        future: ApiService().GetTafWithSummaryByUserid(PreferenceUtils.getString("UserID").toString(),base64.encode(utf8.encode(PreferenceUtils.getString("Role"))),"Open,Approved,Remmited,Draft",GetSelectedDateFormat(firstDate),GetSelectedDateFormat(lastDate)),
         builder: (context,snapshot){
           if (snapshot.connectionState == ConnectionState.waiting) {
             return ProgressIndicator(context,"Please Wait..");

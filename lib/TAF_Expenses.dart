@@ -1,9 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:zen_expenses_manager/prefrence/PreferenceUtils.dart';
 import 'dart:io' as Platform;
-
+import 'package:provider/provider.dart';
+import 'package:zen_expenses_manager/provider/DrawerItemRow.dart';
+import 'Add_Expenses.dart';
 import 'ApiConstants.dart';
 import 'ApiService.dart';
 import 'Model/TAFExpenseSummaryByTAFid.dart';
@@ -22,6 +25,20 @@ class _TAF_ExpensesState extends State<TAF_Expenses> {
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   List<TAFExpenseSummaryByTAFid> list = [];
+  double total=0.0;
+  late final Future<List<TAFExpenseSummaryByTAFid>> myFuture;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+   //myFuture = ApiService().GetTafExpenseSummaryByTAFid(widget.taf_id);
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+
+      print('refresh');
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -75,34 +92,7 @@ class _TAF_ExpensesState extends State<TAF_Expenses> {
     else
       return 120;
   }
-  Widget MainView(BuildContext context){
-    // return ListView(
-    //   children: [
-    //     HeaderView(context),
-    //     SizedBox(height: 10,),
-    //
-    //     tabListWidget()
-    //   ],
-    // );
 
-    return Stack(
-      children: [
-        Positioned(child: ListView(
-            children: [
-              HeaderView(context),
-              SizedBox(height: 10,),
-
-              tabListWidget()
-            ],
-        )),
-        Positioned(
-
-          child:  Align(
-              alignment: Alignment.bottomCenter,
-              child: Bottom_Buttons(context)),),
-      ],
-    );
-  }
   Widget HeaderView(BuildContext context){
     return Container(
       height:  getheight(),
@@ -182,7 +172,34 @@ class _TAF_ExpensesState extends State<TAF_Expenses> {
       ),
     );
   }
+  Widget MainView(BuildContext context){
+    // return ListView(
+    //   children: [
+    //     HeaderView(context),
+    //     SizedBox(height: 10,),
+    //
+    //     tabListWidget()
+    //   ],
+    // );
 
+    return Stack(
+      children: [
+        Positioned(child: ListView(
+          children: [
+            HeaderView(context),
+            SizedBox(height: 10,),
+
+            tabListWidget()
+          ],
+        )),
+        Positioned(
+
+          child:  Align(
+              alignment: Alignment.bottomCenter,
+              child: Bottom_Buttons(context)),),
+      ],
+    );
+  }
   Widget TotalSpendingView(BuildContext context,double total)
   {
     return Container(
@@ -208,25 +225,36 @@ class _TAF_ExpensesState extends State<TAF_Expenses> {
           const SizedBox(height: 10,),
           Text("\u{20B9} ${total.toStringAsFixed(2)}",style: TextStyle(fontSize: 40,fontWeight: FontWeight.w700),),
           const SizedBox(height: 10,),
-          Container(
+          GestureDetector(
+            onTapUp: (detail){
+             /* Navigator.push(context,MaterialPageRoute(builder: (nextcontext) => Add_Expenses(
+                tafid: widget.taf_id,
+              )));*/
+              FocusManager.instance.primaryFocus?.unfocus();
+              Navigator.push( context, MaterialPageRoute( builder: (context) => Add_Expenses(
+                tafid: widget.taf_id,
+              )), ).then((value) => setState(() {}));
+            },
+            child: Container(
 
-            height: 60.00,
-            margin: EdgeInsets.only(left: 30,right: 30),
-            decoration: BoxDecoration(
-              color: Color(
-                ApiConstants.BG_Add_Expense_Blue
+              height: 60.00,
+              margin: EdgeInsets.only(left: 30,right: 30),
+              decoration: BoxDecoration(
+                color: Color(
+                  ApiConstants.BG_Add_Expense_Blue
+                ),
+                borderRadius: BorderRadius.all(Radius.circular(15)),
               ),
-              borderRadius: BorderRadius.all(Radius.circular(15)),
-            ),
 
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
 
-              children: [
-                Icon(Icons.add_circle_outline,color: Colors.white,),
-                SizedBox(width: 10,),
-                Text("ADD EXPENSE",style: TextStyle(color: Colors.white,fontSize: 17.0),)
-              ],
+                children: [
+                  Icon(Icons.add_circle_outline,color: Colors.white,),
+                  SizedBox(width: 10,),
+                  Text("ADD EXPENSE",style: TextStyle(color: Colors.white,fontSize: 17.0),)
+                ],
+              ),
             ),
           )
 
@@ -279,10 +307,11 @@ class _TAF_ExpensesState extends State<TAF_Expenses> {
             {
               if(snapshot.data!.length>0){
                 list = snapshot.data!;
-                final total = list.fold<double>(0, (sum, item) => sum + item.amount!);
+
+                final totals = list.fold<double>(0, (sum, item) => sum + item.amount!);
                 return Column(
                   children: [
-                    TotalSpendingView(context,total),
+                    TotalSpendingView(context,totals),
                     SizedBox(height: 10,),
                     Container(
                       margin: EdgeInsets.only(left: 25,right: 25),
@@ -309,12 +338,12 @@ class _TAF_ExpensesState extends State<TAF_Expenses> {
                   ],
                 );
               }else{
-                return  Center(child: Text('Empty data'));
+                return  TotalSpendingView(context, total);
               }
             }
             else
             {
-              return  Center(child: Text('Empty data'));
+              return  TotalSpendingView(context, total);
             }
 
           }
@@ -349,10 +378,10 @@ class _TAF_ExpensesState extends State<TAF_Expenses> {
               backgroundColor: Color(
                   ApiConstants.BG_Add_Expense_Blue
               ),
-              // shape: RoundedRectangleBorder(
-              //   borderRadius: BorderRadius.circular(12),
-              //   // <-- Radius
-              // ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(0),
+                // <-- Radius
+              ),
             ),
           ),
         )

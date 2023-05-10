@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:zen_expenses_manager/Splashpage.dart';
@@ -6,6 +8,7 @@ import 'package:zen_expenses_manager/TAF_Expenses.dart';
 import 'package:zen_expenses_manager/prefrence/PreferenceUtils.dart';
 import 'package:zen_expenses_manager/provider/DrawerItemRow.dart';
 
+import 'MyHttpOverrides.dart';
 import 'NavigationService.dart';
 
 void main() async {
@@ -16,6 +19,7 @@ void main() async {
     DeviceOrientation.portraitUp,
 
   ]);
+  HttpOverrides.global = MyHttpOverrides();
   runApp(const MyApp());
 }
 
